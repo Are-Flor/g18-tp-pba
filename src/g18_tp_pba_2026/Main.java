@@ -518,7 +518,7 @@ public class Main {
         boolean valido = false;
 
         while (!valido) {
-            System.out.print("Bateria maxima en % mayor a 0 y menor o igual a 100: ");
+            System.out.print("Ingrese bateria maxima del vehiculo (1% - 100%): ");
 
             if (sc.hasNextDouble()) {
                 bateria = sc.nextDouble();
@@ -527,7 +527,7 @@ public class Main {
                 if (bateria > 0 && bateria <= 100) {
                     valido = true;
                 } else {
-                    System.out.println("La bateria maxima debe ser mayor a 0 y menor o igual a 100.");
+                    System.out.println("Error: la bateria debe estar entre 1 y 100.");
                 }
             } else {
                 System.out.println("Opcion invalida. Debe ingresar un numero.");
