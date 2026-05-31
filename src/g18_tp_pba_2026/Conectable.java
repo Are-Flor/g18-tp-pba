@@ -5,10 +5,10 @@
 package g18_tp_pba_2026;
 
 public interface Conectable {
-
+    
     boolean conectarALaRed();
-
+    
     boolean estaConectado();
-
+    
     String getNombreNodo();
 }

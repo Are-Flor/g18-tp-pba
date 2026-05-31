@@ -15,12 +15,19 @@ public class Moto extends Vehiculo {
         double consumo = distanciaKm * 0.5;
         consumirConRecargas(consumo);
     }
-
+    
     @Override
     public String descripcionTipo() {
         return "Moto";
     }
-
+    
+    @Override
+        public String toString() {
+            return String.format("Moto: %s | bateria actual: %.2f%% | capacidad carga: %.2fkg | ultimo consumo: %.2f%% | recargas ultimo viaje: %d | minutos extra por carga: %d", 
+                   id, bateriaActual, capacidadCargaKg, ultimoConsumo, recargasUltimoViaje, minutosExtraCarga);
+}
+    
+    /*
     @Override
     public String toString() {
         return "Moto: " + id
@@ -30,4 +37,5 @@ public class Moto extends Vehiculo {
                 + " | recargas ultimo viaje: " + recargasUltimoViaje
                 + " | minutos extra por carga: " + minutosExtraCarga;
     }
+    */
 }

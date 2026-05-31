@@ -111,11 +111,19 @@ public abstract class Vehiculo {
             }
         }
     }
-
+    
     public abstract void desplazarse(double distanciaKm);
-
+    
     public abstract String descripcionTipo();
-
+    
+    @Override
+        public String toString() {
+            return String.format("Vehiculo: %s | bateria actual: %.2f%% | bateria maxima: %.2f%% | capacidad carga: %.2fkg | ultimo consumo: %.2f%% | recargas: %d | minutos extra: %d", 
+                   id, bateriaActual, bateriaMaxima, capacidadCargaKg, ultimoConsumo, recargasUltimoViaje, minutosExtraCarga);
+}
+    
+    
+    /*
     @Override
     public String toString() {
         return "Vehiculo: " + id
@@ -126,4 +134,5 @@ public abstract class Vehiculo {
                 + " | recargas ultimo viaje: " + recargasUltimoViaje
                 + " | minutos extra por carga: " + minutosExtraCarga;
     }
+    */
 }

@@ -78,7 +78,7 @@ public class Paquete implements Comparable<Paquete>, Cloneable {
 
         return this.id.compareTo(otro.id);
     }
-
+    
     @Override
     public String toString() {
         return "Paquete: " + id

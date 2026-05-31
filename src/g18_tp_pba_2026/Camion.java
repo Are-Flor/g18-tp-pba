@@ -20,7 +20,7 @@ public class Camion extends Vehiculo {
     public void setTieneRemolque(boolean tieneRemolque) {
         this.tieneRemolque = tieneRemolque;
     }
-
+    
     @Override
     public void desplazarse(double distanciaKm) {
         double consumo;
@@ -33,12 +33,19 @@ public class Camion extends Vehiculo {
 
         consumirConRecargas(consumo);
     }
-
+    
     @Override
     public String descripcionTipo() {
         return "Camion";
     }
-
+    
+    @Override
+        public String toString() {
+            return String.format("Camion: %s | bateria actual: %.2f%% | capacidad carga: %.2fkg | tiene remolque: %b | ultimo consumo: %.2f%% | recargas ultimo viaje: %d | minutos extra por carga: %d", 
+                   id, bateriaActual, capacidadCargaKg, tieneRemolque, ultimoConsumo, recargasUltimoViaje, minutosExtraCarga);
+}
+    
+    /*
     @Override
     public String toString() {
         return "Camion: " + id
@@ -49,4 +56,5 @@ public class Camion extends Vehiculo {
                 + " | recargas ultimo viaje: " + recargasUltimoViaje
                 + " | minutos extra por carga: " + minutosExtraCarga;
     }
+    */
 }

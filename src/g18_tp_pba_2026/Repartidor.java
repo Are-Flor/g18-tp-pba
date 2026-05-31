@@ -70,8 +70,11 @@ public class Repartidor {
         if (vehiculo != null) {
             vehiculo.desplazarse(distancia);
 
-            System.out.println("Distancia recorrida: " + distancia + " km");
-            System.out.println("Bateria consumida: " + vehiculo.getUltimoConsumo() + "%");
+            //System.out.println("Distancia recorrida: " + distancia + " km");
+            System.out.printf("Distancia recorrida: %.2f km\n", distancia);
+            //System.out.println("Bateria consumida: " + vehiculo.getUltimoConsumo() + "%");
+            double porcentajeConsumidoReal = (vehiculo.getUltimoConsumo() / vehiculo.getBateriaMaxima()) * 100;
+            System.out.printf("Bateria consumida: %.2f%%\n", porcentajeConsumidoReal);
             System.out.println("Recargas necesarias: " + vehiculo.getRecargasUltimoViaje());
             System.out.println("Tiempo extra por recarga: " + vehiculo.getMinutosExtraCarga() + " minutos");
 
@@ -90,6 +93,33 @@ public class Repartidor {
     }
 
     @Override
+        public String toString() {
+            String textoVehiculo;
+            
+            if (vehiculo == null) {
+                textoVehiculo = "Sin vehiculo";
+        
+            } else {
+                textoVehiculo = String.format("%s: %s | bateria actual: %.2f%% | capacidad carga: %.2fkg", 
+                vehiculo.descripcionTipo(), 
+                vehiculo.getId(), 
+                vehiculo.getBateriaActual(), 
+                vehiculo.getCapacidadCargaKg());
+                
+                if (vehiculo instanceof Camion) {
+                    textoVehiculo += " | tiene remolque: " + ((Camion)vehiculo).isTieneRemolque();
+                }
+                
+                textoVehiculo += String.format(" | ultimo consumo: %.2f%% | recargas ultimo viaje: %d | minutos extra por carga: %d",
+                    vehiculo.getUltimoConsumo(),
+                    vehiculo.getRecargasUltimoViaje(),
+                    vehiculo.getMinutosExtraCarga());
+            }
+            
+            return String.format("Repartidor: %s | resistencia: %.2f | peso maximo: %.2f kg | ubicacion actual: %s | vehiculo: %s", 
+                    nombre, resistencia, pesoMaximoCarga, ubicacionActual.getNombre(), textoVehiculo);
+        }
+    /*@Override
     public String toString() {
         String textoVehiculo;
 
@@ -104,5 +134,5 @@ public class Repartidor {
                 + " | peso maximo: " + pesoMaximoCarga
                 + " | ubicacion actual: " + ubicacionActual.getNombre()
                 + " | vehiculo: " + textoVehiculo;
-    }
+    }*/
 }
