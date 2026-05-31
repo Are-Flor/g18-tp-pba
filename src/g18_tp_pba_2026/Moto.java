@@ -13,12 +13,7 @@ public class Moto extends Vehiculo {
     @Override
     public void desplazarse(double distanciaKm) {
         double consumo = distanciaKm * 0.5;
-
-        bateriaActual = bateriaActual - consumo;
-
-        if (bateriaActual < 0) {
-            bateriaActual = 0;
-        }
+        consumirConRecargas(consumo);
     }
 
     @Override
@@ -29,7 +24,10 @@ public class Moto extends Vehiculo {
     @Override
     public String toString() {
         return "Moto: " + id
-                + " | bateria actual: " + bateriaActual
-                + " | capacidad carga: " + capacidadCargaKg;
+                + " | bateria actual: " + bateriaActual + "%"
+                + " | capacidad carga: " + capacidadCargaKg + "kg"
+                + " | ultimo consumo: " + ultimoConsumo + "%"
+                + " | recargas ultimo viaje: " + recargasUltimoViaje
+                + " | minutos extra por carga: " + minutosExtraCarga;
     }
 }

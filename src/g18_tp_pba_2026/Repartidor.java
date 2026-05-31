@@ -64,11 +64,17 @@ public class Repartidor {
         return p.getPeso() <= vehiculo.getCapacidadCargaKg();
     }
 
-    public void viajarA(PuntoDistribucion destino) {
+    public boolean viajarA(PuntoDistribucion destino) {
         double distancia = ubicacionActual.distanciaA(destino);
 
         if (vehiculo != null) {
             vehiculo.desplazarse(distancia);
+
+            System.out.println("Distancia recorrida: " + distancia + " km");
+            System.out.println("Bateria consumida: " + vehiculo.getUltimoConsumo() + "%");
+            System.out.println("Recargas necesarias: " + vehiculo.getRecargasUltimoViaje());
+            System.out.println("Tiempo extra por recarga: " + vehiculo.getMinutosExtraCarga() + " minutos");
+
         } else {
             resistencia = resistencia - (distancia * 0.8);
 
@@ -79,6 +85,8 @@ public class Repartidor {
 
         ubicacionActual = destino;
         destino.setVisitado(true);
+
+        return true;
     }
 
     @Override
@@ -88,7 +96,7 @@ public class Repartidor {
         if (vehiculo == null) {
             textoVehiculo = "Sin vehiculo";
         } else {
-            textoVehiculo = vehiculo.descripcionTipo();
+            textoVehiculo = vehiculo.toString();
         }
 
         return "Repartidor: " + nombre

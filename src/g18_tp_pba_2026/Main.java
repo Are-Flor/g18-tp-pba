@@ -10,29 +10,29 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
-        Scanner teclado = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
         Paquete[] paquetes = new Paquete[50];
-        int contPaquetes = 0;
+        int cantPaquetes = 0;
 
         Vehiculo[] vehiculos = new Vehiculo[50];
-        int contVehiculos = 0;
+        int cantVehiculos = 0;
 
         PuntoDistribucion[] puntos = new PuntoDistribucion[50];
-        int contPuntos = 0;
+        int cantPuntos = 0;
 
-        PuntoDistribucion base = new PuntoDistribucion("Central", 0, 0);
-        puntos[contPuntos] = base;
-        contPuntos++;
+        PuntoDistribucion central = new PuntoDistribucion("Central", 0, 0);
+        central.setVisitado(true);
+        puntos[cantPuntos] = central;
+        cantPuntos++;
 
-        Repartidor sam = new Repartidor("Sam", 15, base);
+        Repartidor repartidor = new Repartidor("Sam", 15.0, central);
 
         String opcion;
 
         do {
             System.out.println("===============================");
-            System.out.println(" BRIDGES DISTRIBUTION SYSTEM ");
+            System.out.println(" BRIDGES DISTRIBUTION SYSTEM");
             System.out.println("===============================");
             System.out.println("1. Gestion de paquetes");
             System.out.println("2. Gestion de vehiculos");
@@ -40,30 +40,24 @@ public class Main {
             System.out.println("4. Repartidor");
             System.out.println("0. Salir");
             System.out.print("Opcion: ");
-
-            opcion = teclado.nextLine();
+            opcion = sc.nextLine();
 
             switch (opcion) {
                 case "1":
-                    contPaquetes = menuPaquetes(teclado, paquetes, contPaquetes);
+                    cantPaquetes = menuPaquetes(sc, paquetes, cantPaquetes);
                     break;
-
                 case "2":
-                    contVehiculos = menuVehiculos(teclado, vehiculos, contVehiculos);
+                    cantVehiculos = menuVehiculos(sc, vehiculos, cantVehiculos);
                     break;
-
                 case "3":
-                    contPuntos = menuPuntos(teclado, puntos, contPuntos);
+                    cantPuntos = menuPuntos(sc, puntos, cantPuntos);
                     break;
-
                 case "4":
-                    menuRepartidor(teclado, sam, vehiculos, contVehiculos, puntos, contPuntos, paquetes, contPaquetes);
+                    menuRepartidor(sc, repartidor, vehiculos, cantVehiculos, puntos, cantPuntos, paquetes, cantPaquetes);
                     break;
-
                 case "0":
                     System.out.println("Fin del programa");
                     break;
-
                 default:
                     System.out.println("Opcion invalida. Por favor, ingrese un numero del 0 al 4.");
             }
@@ -71,8 +65,9 @@ public class Main {
         } while (!opcion.equals("0"));
     }
 
-    public static int menuPaquetes(Scanner teclado, Paquete[] paquetes, int contPaquetes) {
+    public static int menuPaquetes(Scanner sc, Paquete[] paquetes, int cantPaquetes) {
         String opcion;
+
         do {
             System.out.println("----- PAQUETES -----");
             System.out.println("1. Registrar paquete");
@@ -80,168 +75,161 @@ public class Main {
             System.out.println("3. Listar paquetes");
             System.out.println("4. Ordenar paquetes");
             System.out.println("0. Volver");
-
-            opcion = teclado.nextLine();
+            opcion = sc.nextLine();
 
             switch (opcion) {
                 case "1":
-                    if (contPaquetes >= paquetes.length) {
+                    if (cantPaquetes >= paquetes.length) {
                         System.out.println("No hay espacio para mas paquetes.");
-                        break;
+                    } else {
+                        System.out.print("ID: ");
+                        String id = sc.nextLine();
+
+                        System.out.print("Descripcion: ");
+                        String descripcion = sc.nextLine();
+
+                        double peso = leerDoublePositivo(sc, "Peso: ");
+
+                        boolean urgente = leerBooleanoConUnoCero(sc, "Urgente");
+
+                        paquetes[cantPaquetes] = new Paquete(id, descripcion, peso, urgente);
+                        cantPaquetes++;
+
+                        System.out.println("Paquete agregado");
                     }
-                    
-                    System.out.print("ID: ");
-                    String id = teclado.nextLine();
-
-                    System.out.print("Descripcion: ");
-                    String descripcion = teclado.nextLine();
-
-                    System.out.print("Peso: ");
-                    double peso = teclado.nextDouble();
-
-                    System.out.print("Urgente (true/false): ");
-                    boolean urgente = teclado.nextBoolean();
-                    teclado.nextLine();
-
-                    paquetes[contPaquetes] = new Paquete(id, descripcion, peso, urgente);
-                    contPaquetes++;
-                    System.out.println("Paquete agregado");
                     break;
 
                 case "2":
-                    if (contPaquetes > 0) {
-                        for (int i = 0; i < contPaquetes; i++) {
+                    if (cantPaquetes > 0) {
+                        for (int i = 0; i < cantPaquetes; i++) {
                             System.out.println(i + " - " + paquetes[i]);
                         }
 
-                        System.out.print("Seleccione posicion: ");
-                        int pos = teclado.nextInt();
-                        teclado.nextLine();
+                        int pos = leerEntero(sc, "Seleccione posicion: ");
 
-                        if (pos >= 0 && pos < contPaquetes) {
-                            if (contPaquetes >= paquetes.length) {
+                        if (pos >= 0 && pos < cantPaquetes) {
+                            if (cantPaquetes >= paquetes.length) {
                                 System.out.println("No hay espacio en el arreglo para clonar.");
-                                break;
+                            } else {
+                                Paquete copia = paquetes[pos].clone();
+
+                                System.out.print("Nuevo ID: ");
+                                String nuevoId = sc.nextLine();
+
+                                copia.setId(nuevoId);
+                                paquetes[cantPaquetes] = copia;
+                                cantPaquetes++;
+
+                                System.out.println("Paquete clonado");
                             }
-                            
-                            Paquete clon = paquetes[pos].clone();
-
-                            System.out.print("Nuevo ID: ");
-                            String nuevoId = teclado.nextLine();
-                            clon.setId(nuevoId);
-
-                            paquetes[contPaquetes] = clon;
-                            contPaquetes++;
-                            System.out.println("Paquete clonado");
-                            
                         } else {
                             System.out.println("La posicion ingresada no existe");
                         }
-                        
                     } else {
                         System.out.println("No hay paquetes");
                     }
-                    
                     break;
 
                 case "3":
-                    if (contPaquetes == 0) {
+                    if (cantPaquetes == 0) {
                         System.out.println("No hay paquetes");
-                        
                     } else {
-                        for (int i = 0; i < contPaquetes; i++) {
+                        for (int i = 0; i < cantPaquetes; i++) {
                             System.out.println(paquetes[i]);
                         }
                     }
-                    
                     break;
-                    
+
                 case "4":
-                    for (int i = 0; i < contPaquetes - 1; i++) {
-                        
-                        for (int j = 0; j < contPaquetes - i - 1; j++) {
-                            
-                            if (paquetes[j].compareTo(paquetes[j + 1]) > 0) {
-                                Paquete aux = paquetes[j];
-                                paquetes[j] = paquetes[j + 1];
-                                paquetes[j + 1] = aux;
+                    if (cantPaquetes == 0) {
+                        System.out.println("No hay paquetes");
+                    } else {
+                        for (int i = 0; i < cantPaquetes - 1; i++) {
+                            for (int j = 0; j < cantPaquetes - 1 - i; j++) {
+                                if (paquetes[j].compareTo(paquetes[j + 1]) > 0) {
+                                    Paquete aux = paquetes[j];
+                                    paquetes[j] = paquetes[j + 1];
+                                    paquetes[j + 1] = aux;
+                                }
                             }
                         }
+
+                        System.out.println("Paquetes ordenados:");
+                        for (int i = 0; i < cantPaquetes; i++) {
+                            System.out.println((i + 1) + ") " + paquetes[i]);
+                        }
+
+                        System.out.println("Paquetes ordenados por urgencia, peso e ID");
                     }
-                    System.out.println("Paquetes ordenados por urgencia, peso e ID");
                     break;
-                
+
                 case "0":
                     break;
 
                 default:
                     System.out.println("Opcion invalida.");
             }
+
         } while (!opcion.equals("0"));
 
-        return contPaquetes;
+        return cantPaquetes;
     }
 
-    public static int menuVehiculos(Scanner teclado, Vehiculo[] vehiculos, int contVehiculos) {
+    public static int menuVehiculos(Scanner sc, Vehiculo[] vehiculos, int cantVehiculos) {
         String opcion;
+
         do {
             System.out.println("----- VEHICULOS -----");
             System.out.println("1. Registrar moto");
             System.out.println("2. Registrar camion");
             System.out.println("3. Listar vehiculos");
             System.out.println("0. Volver");
-
-            opcion = teclado.nextLine();
+            opcion = sc.nextLine();
 
             switch (opcion) {
                 case "1":
-                    if (contVehiculos >= vehiculos.length) {
+                    if (cantVehiculos >= vehiculos.length) {
                         System.out.println("No hay espacio para mas vehiculos.");
-                        break;
+                    } else {
+                        System.out.print("ID: ");
+                        String id = sc.nextLine();
+
+                        double bateriaMaxima = leerBateria(sc);
+
+                        double capacidadCarga = leerDoublePositivo(sc, "Capacidad carga: ");
+
+                        vehiculos[cantVehiculos] = new Moto(id, bateriaMaxima, capacidadCarga);
+                        cantVehiculos++;
+
+                        System.out.println("Moto agregada");
                     }
-                    System.out.print("ID: ");
-                    String idMoto = teclado.next();
-
-                    System.out.print("Bateria maxima: ");
-                    double batMoto = teclado.nextDouble();
-
-                    System.out.print("Capacidad carga: ");
-                    double capMoto = teclado.nextDouble();
-                    teclado.nextLine(); // Limpieza
-
-                    vehiculos[contVehiculos] = new Moto(idMoto, batMoto, capMoto);
-                    contVehiculos++;
-                    System.out.println("Moto agregada");
                     break;
 
                 case "2":
-                    if (contVehiculos >= vehiculos.length) {
+                    if (cantVehiculos >= vehiculos.length) {
                         System.out.println("No hay espacio para mas vehiculos.");
-                        break;
+                    } else {
+                        System.out.print("ID: ");
+                        String id = sc.nextLine();
+
+                        double bateriaMaxima = leerBateria(sc);
+
+                        double capacidadCarga = leerDoublePositivo(sc, "Capacidad carga: ");
+
+                        boolean tieneRemolque = leerBooleanoConUnoCero(sc, "Tiene remolque");
+
+                        vehiculos[cantVehiculos] = new Camion(id, bateriaMaxima, capacidadCarga, tieneRemolque);
+                        cantVehiculos++;
+
+                        System.out.println("Camion agregado");
                     }
-                    System.out.print("ID: ");
-                    String idCamion = teclado.next();
-
-                    System.out.print("Bateria maxima: ");
-                    double batCamion = teclado.nextDouble();
-
-                    System.out.print("Capacidad carga: ");
-                    double capCamion = teclado.nextDouble();
-
-                    System.out.print("Tiene remolque (true/false): ");
-                    boolean remolque = teclado.nextBoolean();
-                    teclado.nextLine(); // Limpieza
-
-                    vehiculos[contVehiculos] = new Camion(idCamion, batCamion, capCamion, remolque);
-                    contVehiculos++;
-                    System.out.println("Camion agregado");
                     break;
 
                 case "3":
-                    if (contVehiculos == 0) {
+                    if (cantVehiculos == 0) {
                         System.out.println("No hay vehiculos");
                     } else {
-                        for (int i = 0; i < contVehiculos; i++) {
+                        for (int i = 0; i < cantVehiculos; i++) {
                             System.out.println(vehiculos[i].descripcionTipo());
                             System.out.println(vehiculos[i]);
                         }
@@ -254,62 +242,76 @@ public class Main {
                 default:
                     System.out.println("Opcion invalida.");
             }
+
         } while (!opcion.equals("0"));
 
-        return contVehiculos;
+        return cantVehiculos;
     }
 
-    public static int menuPuntos(Scanner teclado, PuntoDistribucion[] puntos, int contPuntos) {
+    public static int menuPuntos(Scanner sc, PuntoDistribucion[] puntos, int cantPuntos) {
         String opcion;
+
         do {
             System.out.println("----- PUNTOS -----");
             System.out.println("1. Registrar punto");
             System.out.println("2. Conectar puntos");
             System.out.println("3. Listar puntos");
             System.out.println("0. Volver");
-
-            opcion = teclado.nextLine();
+            opcion = sc.nextLine();
 
             switch (opcion) {
                 case "1":
-                    if (contPuntos >= puntos.length) {
+                    if (cantPuntos >= puntos.length) {
                         System.out.println("No hay espacio para mas puntos.");
-                        break;
+                    } else {
+                        System.out.print("Nombre: ");
+                        String nombre = sc.nextLine();
+
+                        double x = leerDouble(sc, "Coordenada X: ");
+                        double y = leerDouble(sc, "Coordenada Y: ");
+
+                        puntos[cantPuntos] = new PuntoDistribucion(nombre, x, y);
+                        cantPuntos++;
+
+                        System.out.println("Punto agregado");
                     }
-                    System.out.print("Nombre: ");
-                    String nombre = teclado.next();
-
-                    System.out.print("Coordenada X: ");
-                    double x = teclado.nextDouble();
-
-                    System.out.print("Coordenada Y: ");
-                    double y = teclado.nextDouble();
-                    teclado.nextLine();
-
-                    puntos[contPuntos] = new PuntoDistribucion(nombre, x, y);
-                    contPuntos++;
-                    System.out.println("Punto agregado");
                     break;
 
                 case "2":
-                    if (contPuntos == 0) {
-                        System.out.println("No hay puntos");
-                        
+                    if (cantPuntos < 2) {
+                        System.out.println("Debe haber al menos dos puntos para conectar.");
                     } else {
-                        
-                        for (int i = 0; i < contPuntos; i++) {
-                            if (puntos[i].conectarALaRed()) {
-                                System.out.println("Conectado: " + puntos[i].getNombreNodo());
+                        for (int i = 0; i < cantPuntos; i++) {
+                            System.out.println(i + " - " + puntos[i].getNombre());
+                        }
+
+                        int origen = leerEntero(sc, "Seleccione punto origen: ");
+                        int destino = leerEntero(sc, "Seleccione punto destino: ");
+
+                        if (origen >= 0 && origen < cantPuntos && destino >= 0 && destino < cantPuntos) {
+                            if (origen == destino) {
+                                System.out.println("No puede conectar un punto consigo mismo.");
+                            } else {
+                                boolean conectadoOrigen = puntos[origen].conectarALaRed();
+                                boolean conectadoDestino = puntos[destino].conectarALaRed();
+
+                                if (conectadoOrigen && conectadoDestino) {
+                                    System.out.println("Puntos conectados: " + puntos[origen].getNombre() + " - " + puntos[destino].getNombre());
+                                } else {
+                                    System.out.println("No se pudieron conectar los puntos.");
+                                }
                             }
+                        } else {
+                            System.out.println("Opcion invalida.");
                         }
                     }
                     break;
 
                 case "3":
-                    if (contPuntos == 0) {
+                    if (cantPuntos == 0) {
                         System.out.println("No hay puntos");
                     } else {
-                        for (int i = 0; i < contPuntos; i++) {
+                        for (int i = 0; i < cantPuntos; i++) {
                             System.out.println(puntos[i]);
                         }
                     }
@@ -321,18 +323,17 @@ public class Main {
                 default:
                     System.out.println("Opcion invalida.");
             }
+
         } while (!opcion.equals("0"));
 
-        return contPuntos;
+        return cantPuntos;
     }
 
-    public static void menuRepartidor(Scanner teclado,
-            Repartidor sam,
-            Vehiculo[] vehiculos, int contVehiculos,
-            PuntoDistribucion[] puntos, int contPuntos,
-            Paquete[] paquetes, int contPaquetes) {
-
+    public static void menuRepartidor(Scanner sc, Repartidor repartidor, Vehiculo[] vehiculos, int cantVehiculos,
+                                      PuntoDistribucion[] puntos, int cantPuntos, Paquete[] paquetes, int cantPaquetes) {
         String opcion;
+        Paquete paqueteSeleccionado = null;
+
         do {
             System.out.println("----- REPARTIDOR -----");
             System.out.println("1. Equipar vehiculo");
@@ -342,89 +343,97 @@ public class Main {
             System.out.println("5. Cargar bateria");
             System.out.println("6. Simular carga");
             System.out.println("0. Volver");
-
-            opcion = teclado.nextLine();
+            opcion = sc.nextLine();
 
             switch (opcion) {
                 case "1":
-                    if (contVehiculos == 0) {
+                    if (cantVehiculos == 0) {
                         System.out.println("No hay vehiculos");
                     } else {
-                        for (int i = 0; i < contVehiculos; i++) {
+                        for (int i = 0; i < cantVehiculos; i++) {
                             System.out.println(i + " - " + vehiculos[i]);
                         }
-                        System.out.print("Seleccione vehiculo: ");
-                        int pos = teclado.nextInt();
-                        teclado.nextLine();
 
-                        if (pos >= 0 && pos < contVehiculos) {
-                            sam.equiparVehiculo(vehiculos[pos]);
+                        int posVehiculo = leerEntero(sc, "Seleccione vehiculo: ");
+
+                        if (posVehiculo >= 0 && posVehiculo < cantVehiculos) {
+                            repartidor.equiparVehiculo(vehiculos[posVehiculo]);
                             System.out.println("Vehiculo equipado");
+                        } else {
+                            System.out.println("Opcion invalida.");
                         }
                     }
                     break;
 
                 case "2":
-                    if (contPuntos == 0) {
+                    if (repartidor.getVehiculo() == null) {
+                        System.out.println("Debe seleccionar un vehiculo antes de viajar.");
+                    } else if (paqueteSeleccionado == null) {
+                        System.out.println("Debe seleccionar una carga antes de viajar.");
+                    } else if (cantPuntos == 0) {
                         System.out.println("No hay puntos");
                     } else {
-                        for (int i = 0; i < contPuntos; i++) {
+                        for (int i = 0; i < cantPuntos; i++) {
                             System.out.println(i + " - " + puntos[i].getNombre());
                         }
-                        System.out.print("Seleccione destino: ");
-                        int destino = teclado.nextInt();
-                        teclado.nextLine();
 
-                        if (destino >= 0 && destino < contPuntos) {
-                            sam.viajarA(puntos[destino]);
-                            System.out.println("Viaje realizado");
+                        int destino = leerEntero(sc, "Seleccione destino: ");
+
+                        if (destino >= 0 && destino < cantPuntos) {
+                            boolean viajeRealizado = repartidor.viajarA(puntos[destino]);
+
+                            if (viajeRealizado) {
+                                System.out.println("Viaje realizado");
+                            } else {
+                                System.out.println("No se pudo realizar el viaje.");
+                            }
+                            } else {
+                            System.out.println("Opcion invalida. No se realizo el viaje.");
                         }
                     }
                     break;
 
                 case "3":
-                    System.out.println(sam);
+                    System.out.println(repartidor);
                     break;
 
                 case "4":
-                    sam.descansar();
+                    repartidor.descansar();
                     System.out.println("Sam descanso");
                     break;
 
                 case "5":
-                    if (sam.getVehiculo() == null) {
+                    if (repartidor.getVehiculo() == null) {
                         System.out.println("Sam no tiene vehiculo");
-                        
                     } else {
-                        System.out.print("Cantidad de carga: ");
-                        double carga = teclado.nextDouble();
-                        teclado.nextLine();
-
-                        sam.getVehiculo().cargarBateria(carga);
-                        System.out.println("Bateria cargada");
+                        System.out.println("Cargar bateria");
+                        repartidor.getVehiculo().cargarBateria(100);
+                        System.out.println("100% de bateria cargada para el vehiculo seleccionado");
                     }
                     break;
 
                 case "6":
-                    if (contPaquetes == 0) {
+                    if (cantPaquetes == 0) {
                         System.out.println("No hay paquetes");
-                        
+                    } else if (repartidor.getVehiculo() == null) {
+                        System.out.println("Debe seleccionar un vehiculo antes de seleccionar una carga.");
                     } else {
-                        for (int i = 0; i < contPaquetes; i++) {
+                        for (int i = 0; i < cantPaquetes; i++) {
                             System.out.println(i + " - " + paquetes[i]);
                         }
-                        
-                        System.out.print("Seleccione paquete: ");
-                        int posPaq = teclado.nextInt();
-                        teclado.nextLine();
 
-                        if (posPaq >= 0 && posPaq < contPaquetes) {
-                            if (sam.puedeCargar(paquetes[posPaq])) {
+                        int posPaquete = leerEntero(sc, "Seleccione paquete: ");
+
+                        if (posPaquete >= 0 && posPaquete < cantPaquetes) {
+                            if (repartidor.puedeCargar(paquetes[posPaquete])) {
+                                paqueteSeleccionado = paquetes[posPaquete];
                                 System.out.println("Sam puede transportar el paquete");
-                                
+                                System.out.println("Carga seleccionada correctamente");
                             } else {
                                 System.out.println("Sam NO puede transportar el paquete");
                             }
+                        } else {
+                            System.out.println("Opcion invalida.");
                         }
                     }
                     break;
@@ -435,6 +444,122 @@ public class Main {
                 default:
                     System.out.println("Opcion invalida.");
             }
+
         } while (!opcion.equals("0"));
+    }
+
+    public static int leerEntero(Scanner sc, String mensaje) {
+        int numero = 0;
+        boolean valido = false;
+
+        while (!valido) {
+            System.out.print(mensaje);
+
+            if (sc.hasNextInt()) {
+                numero = sc.nextInt();
+                sc.nextLine();
+                valido = true;
+            } else {
+                System.out.println("Opcion invalida. Debe ingresar un numero.");
+                sc.nextLine();
+            }
+        }
+
+        return numero;
+    }
+
+    public static double leerDouble(Scanner sc, String mensaje) {
+        double numero = 0;
+        boolean valido = false;
+
+        while (!valido) {
+            System.out.print(mensaje);
+
+            if (sc.hasNextDouble()) {
+                numero = sc.nextDouble();
+                sc.nextLine();
+                valido = true;
+            } else {
+                System.out.println("Opcion invalida. Debe ingresar un numero.");
+                sc.nextLine();
+            }
+        }
+
+        return numero;
+    }
+
+    public static double leerDoublePositivo(Scanner sc, String mensaje) {
+        double numero = 0;
+        boolean valido = false;
+
+        while (!valido) {
+            System.out.print(mensaje);
+
+            if (sc.hasNextDouble()) {
+                numero = sc.nextDouble();
+                sc.nextLine();
+
+                if (numero > 0) {
+                    valido = true;
+                } else {
+                    System.out.println("El valor debe ser mayor a 0.");
+                }
+            } else {
+                System.out.println("Opcion invalida. Debe ingresar un numero.");
+                sc.nextLine();
+            }
+        }
+
+        return numero;
+    }
+
+    public static double leerBateria(Scanner sc) {
+        double bateria = 0;
+        boolean valido = false;
+
+        while (!valido) {
+            System.out.print("Bateria maxima en % mayor a 0 y menor o igual a 100: ");
+
+            if (sc.hasNextDouble()) {
+                bateria = sc.nextDouble();
+                sc.nextLine();
+
+                if (bateria > 0 && bateria <= 100) {
+                    valido = true;
+                } else {
+                    System.out.println("La bateria maxima debe ser mayor a 0 y menor o igual a 100.");
+                }
+            } else {
+                System.out.println("Opcion invalida. Debe ingresar un numero.");
+                sc.nextLine();
+            }
+        }
+
+        return bateria;
+    }
+
+    public static boolean leerBooleanoConUnoCero(Scanner sc, String mensaje) {
+        int opcion = -1;
+        boolean valido = false;
+
+        while (!valido) {
+            System.out.print(mensaje + " Si(1) / No(0): ");
+
+            if (sc.hasNextInt()) {
+                opcion = sc.nextInt();
+                sc.nextLine();
+
+                if (opcion == 1 || opcion == 0) {
+                    valido = true;
+                } else {
+                    System.out.println("Opcion invalida. Debe ingresar 1 para Si o 0 para No.");
+                }
+            } else {
+                System.out.println("Opcion invalida. Debe ingresar 1 para Si o 0 para No.");
+                sc.nextLine();
+            }
+        }
+
+        return opcion == 1;
     }
 }

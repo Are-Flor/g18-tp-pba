@@ -31,11 +31,7 @@ public class Camion extends Vehiculo {
             consumo = distanciaKm * 1.8;
         }
 
-        bateriaActual = bateriaActual - consumo;
-
-        if (bateriaActual < 0) {
-            bateriaActual = 0;
-        }
+        consumirConRecargas(consumo);
     }
 
     @Override
@@ -46,8 +42,11 @@ public class Camion extends Vehiculo {
     @Override
     public String toString() {
         return "Camion: " + id
-                + " | bateria actual: " + bateriaActual
-                + " | capacidad carga: " + capacidadCargaKg
-                + " | tiene remolque: " + tieneRemolque;
+                + " | bateria actual: " + bateriaActual + "%"
+                + " | capacidad carga: " + capacidadCargaKg + "kg"
+                + " | tiene remolque: " + tieneRemolque
+                + " | ultimo consumo: " + ultimoConsumo + "%"
+                + " | recargas ultimo viaje: " + recargasUltimoViaje
+                + " | minutos extra por carga: " + minutosExtraCarga;
     }
 }
